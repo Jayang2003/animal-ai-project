@@ -1,0 +1,132 @@
+{
+  "affenpinscher": {
+    "animal": "Dog",
+    "breed": "Affenpinscher",
+    "origin": "Germany",
+    "life_span": "12-15 years",
+    "temperament": "Curious, playful, confident",
+    "food": "High-quality small breed dog food",
+    "care": "Regular grooming, moderate exercise",
+    "description": "Affenpinschers are small toy dogs known for their monkey-like expression and lively personality."
+  },
+  "afghan_hound": {
+    "animal": "Dog",
+    "breed": "Afghan Hound",
+    "origin": "Afghanistan",
+    "life_span": "12-14 years",
+    "temperament": "Independent, dignified, aloof",
+    "food": "Protein-rich diet",
+    "care": "Daily grooming, regular exercise",
+    "description": "Afghan Hounds are elegant dogs with long silky coats, known for their speed and grace."
+  },
+  "african": {
+    "animal": "Dog",
+    "breed": "African Dog",
+    "origin": "Africa",
+    "life_span": "10-14 years",
+    "temperament": "Alert, adaptable, energetic",
+    "food": "Balanced diet",
+    "care": "Regular exercise and basic grooming",
+    "description": "African dogs are hardy and adaptable, often used for guarding and companionship."
+  },
+  "airedale": {
+    "animal": "Dog",
+    "breed": "Airedale Terrier",
+    "origin": "England",
+    "life_span": "11-14 years",
+    "temperament": "Friendly, courageous, intelligent",
+    "food": "High-quality dog food",
+    "care": "Regular grooming and exercise",
+    "description": "Airedale is the largest terrier breed, known for versatility and intelligence."
+  },
+  "akita": {
+    "animal": "Dog",
+    "breed": "Akita",
+    "origin": "Japan",
+    "life_span": "10-13 years",
+    "temperament": "Loyal, protective, dignified",
+    "food": "High-protein diet",
+    "care": "Moderate grooming, daily exercise",
+    "description": "Akitas are large, powerful dogs known for loyalty and strong guarding instincts."
+  },
+  "american_terrier": {
+    "animal": "Dog",
+    "breed": "American Terrier",
+    "origin": "USA",
+    "life_span": "12-16 years",
+    "temperament": "Energetic, loyal, intelligent",
+    "food": "Balanced diet",
+    "care": "Regular exercise and grooming",
+    "description": "American Terriers are active and friendly dogs, great companions."
+  },
+  "appenzeller": {
+    "animal": "Dog",
+    "breed": "Appenzeller Sennenhund",
+    "origin": "Switzerland",
+    "life_span": "12-14 years",
+    "temperament": "Lively, fearless, intelligent",
+    "food": "High-quality dog food",
+    "care": "Daily exercise",
+    "description": "Appenzeller is a herding dog known for agility and energy."
+  },
+  "australian_cattledog": {
+    "animal": "Dog",
+    "breed": "Australian Cattle Dog",
+    "origin": "Australia",
+    "life_span": "12-15 years",
+    "temperament": "Energetic, intelligent, alert",
+    "food": "High-protein diet",
+    "care": "Heavy exercise required",
+    "description": "Highly active working dogs used for herding cattle."
+  },
+  "australian_terrier": {
+    "animal": "Dog",
+    "breed": "Australian Terrier",
+    "origin": "Australia",
+    "life_span": "11-15 years",
+    "temperament": "Spirited, alert, affectionate",
+    "food": "Balanced diet",
+    "care": "Regular grooming",
+    "description": "Small terrier breed known for loyalty and energy."
+  },
+  "chihuahua": {
+    "animal": "Dog",
+    "breed": "Chihuahua",
+    "origin": "Mexico",
+    "life_span": "14-18 years",
+    "temperament": "Alert, lively, bold",
+    "food": "Small breed dog food",
+    "care": "Minimal grooming",
+    "description": "Chihuahuas are the smallest dog breed with big personalities."
+  },
+  "husky": {
+    "animal": "Dog",
+    "breed": "Siberian Husky",
+    "origin": "Siberia",
+    "life_span": "12-14 years",
+    "temperament": "Friendly, energetic, mischievous",
+    "food": "High-protein diet",
+    "care": "Heavy exercise, grooming",
+    "description": "Huskies are working sled dogs known for endurance and thick coats."
+  },
+  "labrador": {
+    "animal": "Dog",
+    "breed": "Labrador Retriever",
+    "origin": "Canada",
+    "life_span": "10-14 years",
+    "temperament": "Friendly, outgoing, intelligent",
+    "food": "Balanced diet",
+    "care": "Regular exercise",
+    "description": "Labradors are one of the most popular family dogs, known for loyalty and friendliness."
+  },
+  "pug": {
+    "animal": "Dog",
+    "breed": "Pug",
+    "origin": "China",
+    "life_span": "12-15 years",
+    "temperament": "Charming, playful, loving",
+    "food": "Balanced diet",
+    "care": "Low exercise, regular cleaning",
+    "description": "Pugs are small companion dogs known for wrinkled faces and affectionate nature."
+  }
+}

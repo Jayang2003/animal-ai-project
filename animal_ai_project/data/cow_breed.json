@@ -1,0 +1,34 @@
+{
+  "alambadi": {
+    "animal": "Cow",
+    "breed": "Alambadi",
+    "origin": "India",
+    "life_span": "15-20 years",
+    "temperament": "Active, hardy, aggressive",
+    "food": "Grass, hay, and agricultural by-products",
+    "care": "Needs open grazing space and regular health monitoring",
+    "description": "Alambadi cattle are a native Indian breed known for their strength, endurance, and suitability for draught work."
+  },
+
+  "amritmahal": {
+    "animal": "Cow",
+    "breed": "Amritmahal",
+    "origin": "India",
+    "life_span": "12-15 years",
+    "temperament": "Active, alert, energetic",
+    "food": "Green fodder, dry fodder, and grains",
+    "care": "Requires proper nutrition and space for movement",
+    "description": "Amritmahal cattle are known for their speed and strength, mainly used for draught purposes in India."
+  },
+
+  "ayrshire": {
+    "animal": "Cow",
+    "breed": "Ayrshire",
+    "origin": "Scotland",
+    "life_span": "15-20 years",
+    "temperament": "Hardy, adaptable, calm",
+    "food": "Grass, silage, and dairy feed",
+    "care": "Regular milking and proper dairy management",
+    "description": "Ayrshire cattle are a dairy breed known for their high milk production and adaptability to different climates."
+  }
+}

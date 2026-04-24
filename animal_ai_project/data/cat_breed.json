@@ -1,0 +1,67 @@
+{
+  "abyssinian": {
+    "animal": "Cat",
+    "breed": "Abyssinian",
+    "origin": "Ethiopia",
+    "life_span": "12-15 years",
+    "temperament": "Active, playful, intelligent",
+    "food": "High-protein cat food",
+    "care": "Regular exercise, minimal grooming",
+    "description": "Abyssinian cats are highly active and curious, known for their sleek coat and playful personality."
+  },
+
+  "american_bobtail": {
+    "animal": "Cat",
+    "breed": "American Bobtail",
+    "origin": "United States",
+    "life_span": "13-15 years",
+    "temperament": "Friendly, intelligent, social",
+    "food": "Balanced cat diet",
+    "care": "Regular grooming and playtime",
+    "description": "American Bobtails are known for their short tails and dog-like personality, being very affectionate and playful."
+  },
+
+  "american_curl": {
+    "animal": "Cat",
+    "breed": "American Curl",
+    "origin": "United States",
+    "life_span": "12-16 years",
+    "temperament": "Affectionate, playful, adaptable",
+    "food": "Quality cat food",
+    "care": "Gentle grooming, ear care",
+    "description": "American Curl cats are famous for their unique curled ears and friendly nature."
+  },
+
+  "american_shorthair": {
+    "animal": "Cat",
+    "breed": "American Shorthair",
+    "origin": "United States",
+    "life_span": "15-20 years",
+    "temperament": "Calm, easygoing, friendly",
+    "food": "Balanced diet",
+    "care": "Low grooming, regular checkups",
+    "description": "American Shorthair cats are adaptable and easygoing, making them great family pets."
+  },
+
+  "american_wirehair": {
+    "animal": "Cat",
+    "breed": "American Wirehair",
+    "origin": "United States",
+    "life_span": "12-18 years",
+    "temperament": "Gentle, affectionate, quiet",
+    "food": "Nutritious cat food",
+    "care": "Minimal grooming",
+    "description": "American Wirehair cats have a unique wiry coat and are calm and affectionate companions."
+  },
+
+  "applehead_siamese": {
+    "animal": "Cat",
+    "breed": "Applehead Siamese",
+    "origin": "Thailand",
+    "life_span": "15-20 years",
+    "temperament": "Vocal, social, intelligent",
+    "food": "High-quality cat food",
+    "care": "Regular attention and interaction",
+    "description": "Applehead Siamese cats are traditional Siamese with a round face and are very vocal and social."
+  }
+}

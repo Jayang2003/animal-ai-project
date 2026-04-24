@@ -1,0 +1,115 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  overflow: hidden;
+}
+
+/* Center full page */
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* mobile spacing */
+}
+
+/* Login card */
+.login-box {
+  width: 420px;
+  max-width: 100%;   /* 🔥 responsive */
+  padding: 45px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Title */
+.login-box h2 {
+  text-align: center;
+  font-size: 28px;
+}
+
+/* Labels */
+.login-box label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Input group */
+.input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.input-group input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 16px;
+}
+
+/* Icons */
+.icon {
+  margin-right: 8px;
+}
+
+.eye {
+  cursor: pointer;
+}
+
+/* Button */
+button {
+  height: 48px;
+  font-size: 16px;
+  background: #0073ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056cc;
+}
+
+--------------------------------------------------
+/* 📱 MOBILE (max 480px) */
+--------------------------------------------------
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0;   /* 🔥 remove scroll issue */
+  }
+
+  .login-box {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .login-box h2 {
+    font-size: 22px;
+  }
+
+  button {
+    height: 44px;
+  }
+}
+
+--------------------------------------------------
+/* 📲 TABLET (481px - 768px) */
+--------------------------------------------------
+
+@media (max-width: 768px) {
+  .login-box {
+    width: 90%;
+    padding: 30px;
+  }
+}

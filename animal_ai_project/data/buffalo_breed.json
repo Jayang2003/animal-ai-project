@@ -1,0 +1,52 @@
+{
+  "nagpuri": {
+    "animal": "Buffalo",
+    "breed": "Nagpuri",
+    "origin": "Vidarbha region, Maharashtra, India",
+    "life_span": "15-20 years",
+    "temperament": "Calm, docile, hardy",
+    "food": "Green fodder, dry straw, concentrates, mineral supplements",
+    "care": "Regular bathing, deworming every 3 months, hoof trimming",
+    "description": "Nagpuri buffalo is a draught-cum-dairy breed from central India, known for its white coat with black patches and curved horns. Milk fat content is around 7-8%."
+  },
+  "nili-ravi": {
+    "animal": "Buffalo",
+    "breed": "Nili-Ravi",
+    "origin": "Punjab region, Pakistan and India",
+    "life_span": "18-22 years",
+    "temperament": "Gentle, adaptable, productive",
+    "food": "High-quality green fodder, silage, grain-based concentrates",
+    "care": "Wallowing facility needed, regular veterinary checkups, adequate water supply",
+    "description": "Nili-Ravi is one of the highest milk-producing buffalo breeds in the world, yielding 1800-2500 litres per lactation. Recognized by its characteristic 'wall eye' (blue eye) feature."
+  },
+  "pandharpuri": {
+    "animal": "Buffalo",
+    "breed": "Pandharpuri",
+    "origin": "Solapur and Kolhapur districts, Maharashtra, India",
+    "life_span": "15-18 years",
+    "temperament": "Calm, strong, well-built",
+    "food": "Green fodder, dry roughage, oilseed cakes, mineral mixtures",
+    "care": "Regular grooming, shade during summer, vaccination schedule",
+    "description": "Pandharpuri buffalo is known for its distinctive long, curved sword-shaped horns. It is a dual-purpose breed valued for both milk (6-8% fat) and draught work in Maharashtra."
+  },
+  "surti": {
+    "animal": "Buffalo",
+    "breed": "Surti",
+    "origin": "Kaira and Baroda districts, Gujarat, India",
+    "life_span": "15-20 years",
+    "temperament": "Docile, friendly, easy to manage",
+    "food": "Green grass, jowar stover, groundnut cake, balanced mineral feed",
+    "care": "Regular milking schedule, clean housing, seasonal deworming",
+    "description": "Surti buffalo is a medium-sized dairy breed from Gujarat, yielding around 1200-1500 litres per lactation with high fat content of 8-9%. It is well-adapted to hot and humid climates."
+  },
+  "toda": {
+    "animal": "Buffalo",
+    "breed": "Toda",
+    "origin": "Nilgiri Hills, Tamil Nadu, India",
+    "life_span": "16-20 years",
+    "temperament": "Hardy, independent, semi-wild",
+    "food": "Natural highland grasses, shrubs, supplementary mineral licks",
+    "care": "Minimal intervention needed; semi-extensive management system",
+    "description": "Toda buffalo is a rare and indigenous breed reared by the Toda tribe of the Nilgiri Hills. It is considered sacred in their culture and is managed under a semi-wild free-grazing system. Milk yield is low but very rich in fat."
+  }
+}

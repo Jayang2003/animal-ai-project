@@ -1,0 +1,56 @@
+{
+  "Arabian": {
+    "animal": "Horse",
+    "breed": "Arabian",
+    "origin": "Middle East",
+    "life_span": "25-30 years",
+    "temperament": "Intelligent, energetic, friendly",
+    "food": "Grass, hay, grains, oats",
+    "care": "Regular exercise, grooming, hoof care",
+    "description": "Arabian horses are one of the oldest breeds, known for their endurance, beauty, and high stamina."
+  },
+
+  "Friesian": {
+    "animal": "Horse",
+    "breed": "Friesian",
+    "origin": "Netherlands",
+    "life_span": "20-25 years",
+    "temperament": "Gentle, calm, obedient",
+    "food": "Hay, grass, grains",
+    "care": "Daily grooming, mane and tail care",
+    "description": "Friesian horses are famous for their black coat, long flowing mane, and elegant movement."
+  },
+
+  "Kathiawari": {
+    "animal": "Horse",
+    "breed": "Kathiawari",
+    "origin": "Gujarat, India",
+    "life_span": "25-30 years",
+    "temperament": "Hardy, loyal, alert",
+    "food": "Grass, hay, grains",
+    "care": "Moderate grooming, good exercise",
+    "description": "Kathiawari horses are known for their inward-curving ears and ability to survive in harsh climates."
+  },
+
+  "Marwari": {
+    "animal": "Horse",
+    "breed": "Marwari",
+    "origin": "Rajasthan, India",
+    "life_span": "25-30 years",
+    "temperament": "Brave, loyal, intelligent",
+    "food": "Grass, hay, grains",
+    "care": "Regular grooming, exercise, hoof care",
+    "description": "Marwari horses are famous for their unique inward-curving ears and were historically used in war."
+  },
+
+  "Mustang": {
+    "animal": "Horse",
+    "breed": "Mustang",
+    "origin": "North America",
+    "life_span": "20-25 years",
+    "temperament": "Strong, independent, energetic",
+    "food": "Grass, shrubs, hay",
+    "care": "Minimal care, strong natural immunity",
+    "description": "Mustang horses are wild horses known for their strength, endurance, and adaptability."
+  }
+}
