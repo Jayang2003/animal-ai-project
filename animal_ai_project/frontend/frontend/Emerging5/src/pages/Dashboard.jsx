@@ -163,7 +163,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadData() {
       try {
-        const storageKey     = getStorageKey(username);
+        const storageKey      = getStorageKey(username);
         const importedFlagKey = getImportedFlagKey(username);
         const saved = localStorage.getItem(storageKey);
 
@@ -286,7 +286,6 @@ export default function Dashboard() {
 
     setShowWelcome(false);
 
-    // ✅ Set messages ONCE here
     const newMessages = [
       ...messages,
       { role: "user", content: text, files: filesSnapshot },
@@ -305,6 +304,7 @@ export default function Dashboard() {
       let answer = "";
 
       if (filesSnapshot.length > 0) {
+        // ── IMAGE / FILE UPLOAD PATH ──────────────────────────────
         const formData = new FormData();
         formData.append("file", filesSnapshot[0]);
         formData.append("username", username);
@@ -312,91 +312,41 @@ export default function Dashboard() {
         formData.append("history", JSON.stringify(historySnapshot));
 
         const res = await axios.post(`${API}/predict`, formData, {
-  headers: { "Content-Type": "multipart/form-data" },
-});
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
-const data = res.data;
+        const data = res.data;
 
-// ✅ NEW: handle invalid response
-if (!data || typeof data !== "object") {
-  answer = "Error: Invalid server response";
-}
-
-// ✅ NEW: handle unknown case (IMPORTANT FIX)
-else if (data.animal === "unknown") {
-  answer = `
-**Animal:** Unknown
-
-${data.message || "Unsupported or unclear animal image"}
-`;
-}
-
-// ✅ NORMAL CASE
-else {
-  const animal     = data.animal || "Unknown";
-  const breed      = data.breed  || "Unknown";
-  const confidence = data.breed_result?.confidence != null
-    ? (data.breed_result.confidence * 100).toFixed(2)
-    : "N/A";
-
-  const info        = data.breed_info || {};
-  const origin      = info.origin;
-  const lifeSpan    = info.life_span;
-  const temperament = info.temperament;
-  const food        = info.food;
-  const care        = info.care;
-  const description = info.description;
-
-  answer = [
-    `**Animal:** ${animal}`,
-    `**Breed:** ${breed}`,
-    `**Confidence:** ${confidence}%`,
-    "",
-    description ? description : "",
-    origin      ? `**Origin:** ${origin}` : "",
-    lifeSpan    ? `**Life Span:** ${lifeSpan}` : "",
-    temperament ? `**Temperament:** ${temperament}` : "",
-    food        ? `**Food:** ${food}` : "",
-    care        ? `**Care:** ${care}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-}
-
-        if (res.data.error) {
-          answer = `Error: ${res.data.error}`;
+        if (!data || typeof data !== "object") {
+          answer = "Error: Invalid server response";
+        } else if (data.animal === "unknown") {
+          answer = `**Animal:** Unknown\n\n${data.message || "Unsupported or unclear animal image"}`;
         } else {
-          const animal     = res.data.animal || "Unknown";
-          const breed      = res.data.breed  || "Unknown";
-          const confidence = res.data.breed_result?.confidence != null
-            ? (res.data.breed_result.confidence * 100).toFixed(2)
+          const animal     = data.animal || "Unknown";
+          const breed      = data.breed  || "Unknown";
+          const confidence = data.breed_result?.confidence != null
+            ? (data.breed_result.confidence * 100).toFixed(2)
             : "N/A";
-
-          const info        = res.data.breed_info || {};
-          const origin      = info.origin      || null;
-          const lifeSpan    = info.life_span   || null;
-          const temperament = info.temperament || null;
-          const food        = info.food        || null;
-          const care        = info.care        || null;
-          const description = info.description || null;
+          const info = data.breed_info || {};
 
           answer = [
             `**Animal:** ${animal}`,
             `**Breed:** ${breed}`,
             `**Confidence:** ${confidence}%`,
             "",
-            description ? `${description}`                  : "",
-            origin      ? `**Origin:** ${origin}`           : "",
-            lifeSpan    ? `**Life Span:** ${lifeSpan}`      : "",
-            temperament ? `**Temperament:** ${temperament}` : "",
-            food        ? `**Food:** ${food}`               : "",
-            care        ? `**Care:** ${care}`               : "",
+            info.description  ? info.description                        : "",
+            info.origin       ? `**Origin:** ${info.origin}`            : "",
+            info.life_span    ? `**Life Span:** ${info.life_span}`       : "",
+            info.temperament  ? `**Temperament:** ${info.temperament}`   : "",
+            info.food         ? `**Food:** ${info.food}`                 : "",
+            info.care         ? `**Care:** ${info.care}`                 : "",
           ]
             .filter(Boolean)
             .join("\n\n");
         }
+
       } else {
-        // ✅ Real chatbot call
+        // ── TEXT CHAT PATH ────────────────────────────────────────
         const res = await axios.post(`${API}/chat`, {
           message:    text,
           username,
@@ -429,13 +379,12 @@ else {
         return [updatedSession, ...prev.filter((s) => s.id !== updatedSession.id)];
       });
 
-      // ✅ Set messages ONCE here — replaces typing with answer
       setMessages([
         ...newMessages.filter((m) => m.role !== "typing"),
         { role: "ai", content: answer },
       ]);
 
-      // ✅ Save to DB
+      // Save to DB
       try {
         await axios.post(`${API}/save_session`, {
           session_id: updatedSession.id,
@@ -670,14 +619,14 @@ else {
                     <div style={styles.bubbleLabel}>emerging5 AI</div>
                     <ReactMarkdown
                       components={{
-                        p:     ({ children }) => <p style={{ margin: "4px 0", lineHeight: 1.6 }}>{children}</p>,
-                        strong:({ children }) => <strong style={{ color: "#0C447C" }}>{children}</strong>,
-                        ul:    ({ children }) => <ul style={{ paddingLeft: 18, margin: "6px 0" }}>{children}</ul>,
-                        ol:    ({ children }) => <ol style={{ paddingLeft: 18, margin: "6px 0" }}>{children}</ol>,
-                        li:    ({ children }) => <li style={{ marginBottom: 4, lineHeight: 1.6 }}>{children}</li>,
-                        table: ({ children }) => <table style={{ borderCollapse: "collapse", width: "100%", margin: "8px 0", fontSize: 13 }}>{children}</table>,
-                        th:    ({ children }) => <th style={{ background: "#E6F1FB", color: "#0C447C", padding: "6px 10px", border: "1px solid #B5D4F4", textAlign: "left" }}>{children}</th>,
-                        td:    ({ children }) => <td style={{ padding: "5px 10px", border: "1px solid #B5D4F4" }}>{children}</td>,
+                        p:      ({ children }) => <p style={{ margin: "4px 0", lineHeight: 1.6 }}>{children}</p>,
+                        strong: ({ children }) => <strong style={{ color: "#0C447C" }}>{children}</strong>,
+                        ul:     ({ children }) => <ul style={{ paddingLeft: 18, margin: "6px 0" }}>{children}</ul>,
+                        ol:     ({ children }) => <ol style={{ paddingLeft: 18, margin: "6px 0" }}>{children}</ol>,
+                        li:     ({ children }) => <li style={{ marginBottom: 4, lineHeight: 1.6 }}>{children}</li>,
+                        table:  ({ children }) => <table style={{ borderCollapse: "collapse", width: "100%", margin: "8px 0", fontSize: 13 }}>{children}</table>,
+                        th:     ({ children }) => <th style={{ background: "#E6F1FB", color: "#0C447C", padding: "6px 10px", border: "1px solid #B5D4F4", textAlign: "left" }}>{children}</th>,
+                        td:     ({ children }) => <td style={{ padding: "5px 10px", border: "1px solid #B5D4F4" }}>{children}</td>,
                       }}
                     >
                       {msg.content}
@@ -744,7 +693,7 @@ else {
   );
 }
 
-// ── STYLES ─────────────────────────────────────────────────────────────────
+// ── STYLES ──────────────────────────────────────────────────────────────────
 const C = {
   blue900: "#042C53", blue800: "#0C447C", blue600: "#185FA5",
   blue400: "#378ADD", blue200: "#85B7EB", blue100: "#B5D4F4",
@@ -753,57 +702,57 @@ const C = {
 };
 
 const styles = {
-  root:          { fontFamily: "'DM Sans', sans-serif", background: "#f0f6fd", color: C.text, height: "100vh", overflow: "hidden", display: "flex" },
-  sidebar:       { width: 260, minWidth: 260, background: C.sidebar, display: "flex", flexDirection: "column", height: "100vh", borderRight: "1px solid rgba(55,138,221,0.12)" },
-  sbLogo:        { padding: "20px 18px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 11 },
-  logoWrap:      { display: "flex", flexDirection: "column", gap: 2 },
-  logoBrand:     { fontFamily: "'Rajdhani', sans-serif", fontSize: 18, fontWeight: 700, color: "#fff", letterSpacing: ".04em" },
-  logoTag:       { fontSize: 9, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: C.blue400 },
-  sbLabel:       { padding: "14px 16px 5px", fontSize: 9, fontWeight: 600, letterSpacing: ".15em", textTransform: "uppercase", color: "#4a6a8a", opacity: 0.8 },
-  sbHistory:     { flex: 1, overflowY: "auto", padding: "4px 10px 8px" },
-  sbEmpty:       { padding: 16, textAlign: "center", color: "#2a4a68", fontSize: 12, opacity: 0.6 },
-  hi:            { padding: "10px 11px", borderRadius: 8, cursor: "pointer", marginBottom: 2, borderLeft: "2px solid transparent", transition: "background .18s" },
-  hiActive:      { background: "rgba(55,138,221,0.14)", borderLeftColor: C.blue400 },
-  hiQ:           { fontSize: 12, fontWeight: 500, color: "#b8d4ef", lineHeight: 1.45, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" },
-  hiA:           { fontSize: 11, color: "#4a7aa0", marginTop: 4, lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden", fontStyle: "italic" },
-  hiMeta:        { fontSize: 10, color: "#3a5a78", marginTop: 5, display: "flex", alignItems: "center", gap: 5 },
-  hiDot:         { width: 5, height: 5, borderRadius: "50%", background: C.blue400, flexShrink: 0 },
-  sbBottom:      { padding: 12, borderTop: "1px solid rgba(255,255,255,0.05)" },
-  newBtn:        { width: "100%", padding: "10px 14px", background: `linear-gradient(135deg,${C.blue800},${C.blue600})`, color: "#fff", border: "none", borderRadius: 8, fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, cursor: "pointer", letterSpacing: ".02em", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 },
-  main:          { flex: 1, display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" },
-  topbar:        { background: "#fff", borderBottom: `1px solid ${C.border}`, padding: "0 28px", height: 58, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 },
-  topbarLeft:    { display: "flex", alignItems: "center", gap: 14 },
-  topbarDot:     { width: 8, height: 8, borderRadius: "50%", background: "#22c55e", flexShrink: 0 },
-  topbarTitle:   { fontSize: 14, fontWeight: 600, color: C.text },
-  topbarSub:     { fontSize: 12, color: C.muted },
-  topbarActions: { display: "flex", gap: 8, alignItems: "center" },
-  tbBtn:         { padding: "7px 16px", borderRadius: 8, fontSize: 12.5, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", transition: "all .18s", letterSpacing: ".02em" },
-  tbSolid:       { background: C.blue600, border: "none", color: "#fff" },
-  content:       { flex: 1, overflowY: "auto", padding: "32px 36px 0" },
-  sectionLabel:  { fontSize: 11, fontWeight: 600, letterSpacing: ".14em", textTransform: "uppercase", color: C.blue400, marginBottom: 14 },
-  pageTitle:     { fontFamily: "'Rajdhani', sans-serif", fontSize: 34, fontWeight: 700, color: C.blue900, letterSpacing: ".02em", marginBottom: 6 },
-  pageSub:       { fontSize: 14, color: C.muted, marginBottom: 28, fontWeight: 400 },
-  convoWrap:     { marginBottom: 20 },
-  welcome:       { textAlign: "center", padding: "40px 20px", opacity: 0.55 },
-  welcomeIcon:   { margin: "0 auto 16px", width: 56, height: 56, borderRadius: "50%", background: C.blue50, border: `2px solid ${C.blue100}`, display: "flex", alignItems: "center", justifyContent: "center" },
-  msgUser:       { display: "flex", justifyContent: "flex-end", marginBottom: 16 },
-  bubbleUser:    { background: C.blue600, color: "#fff", padding: "12px 16px", borderRadius: "14px 14px 4px 14px", maxWidth: "72%", fontSize: 14, lineHeight: 1.55 },
-  msgAi:         { display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 16 },
-  aiAvatar:      { width: 32, height: 32, borderRadius: "4px", background: C.blue50, border: `2px solid ${C.blue200}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
-  bubbleAi:      { background: "#fff", border: `1px solid ${C.border}`, color: C.text, padding: "12px 16px", borderRadius: "4px 14px 14px 14px", maxWidth: "78%", fontSize: 14, lineHeight: 1.6 },
-  bubbleLabel:   { fontSize: 10.5, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", color: C.blue400, marginBottom: 6 },
-  inputZone:     { background: "#fff", borderTop: `1px solid ${C.border}`, padding: "14px 24px 16px", flexShrink: 0 },
-  fileChipsRow:  { display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 },
-  fileChip:      { padding: "4px 10px 4px 8px", background: C.blue50, border: `1px solid ${C.blue100}`, borderRadius: 6, fontSize: 11.5, color: C.blue800, display: "flex", alignItems: "center", gap: 5 },
-  fileChipX:     { cursor: "pointer", color: C.muted, fontSize: 13, lineHeight: 1, marginLeft: 2 },
-  inputRow:      { display: "flex", alignItems: "flex-end", gap: 10, background: "#f8fbff", border: `1.5px solid ${C.blue100}`, borderRadius: 12, padding: "10px 12px" },
-  uploadBtn:     { width: 32, height: 32, borderRadius: 8, border: `1px solid ${C.blue200}`, background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: C.blue600 },
-  textarea:      { flex: 1, border: "none", background: "transparent", fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: C.text, resize: "none", outline: "none", minHeight: 24, maxHeight: 100, lineHeight: 1.5, padding: "4px 0" },
-  sendBtn:       { width: 36, height: 36, borderRadius: 9, border: "none", background: C.blue600, color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all .18s" },
+  root:            { fontFamily: "'DM Sans', sans-serif", background: "#f0f6fd", color: C.text, height: "100vh", overflow: "hidden", display: "flex" },
+  sidebar:         { width: 260, minWidth: 260, background: C.sidebar, display: "flex", flexDirection: "column", height: "100vh", borderRight: "1px solid rgba(55,138,221,0.12)" },
+  sbLogo:          { padding: "20px 18px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 11 },
+  logoWrap:        { display: "flex", flexDirection: "column", gap: 2 },
+  logoBrand:       { fontFamily: "'Rajdhani', sans-serif", fontSize: 18, fontWeight: 700, color: "#fff", letterSpacing: ".04em" },
+  logoTag:         { fontSize: 9, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: C.blue400 },
+  sbLabel:         { padding: "14px 16px 5px", fontSize: 9, fontWeight: 600, letterSpacing: ".15em", textTransform: "uppercase", color: "#4a6a8a", opacity: 0.8 },
+  sbHistory:       { flex: 1, overflowY: "auto", padding: "4px 10px 8px" },
+  sbEmpty:         { padding: 16, textAlign: "center", color: "#2a4a68", fontSize: 12, opacity: 0.6 },
+  hi:              { padding: "10px 11px", borderRadius: 8, cursor: "pointer", marginBottom: 2, borderLeft: "2px solid transparent", transition: "background .18s" },
+  hiActive:        { background: "rgba(55,138,221,0.14)", borderLeftColor: C.blue400 },
+  hiQ:             { fontSize: 12, fontWeight: 500, color: "#b8d4ef", lineHeight: 1.45, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" },
+  hiA:             { fontSize: 11, color: "#4a7aa0", marginTop: 4, lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden", fontStyle: "italic" },
+  hiMeta:          { fontSize: 10, color: "#3a5a78", marginTop: 5, display: "flex", alignItems: "center", gap: 5 },
+  hiDot:           { width: 5, height: 5, borderRadius: "50%", background: C.blue400, flexShrink: 0 },
+  sbBottom:        { padding: 12, borderTop: "1px solid rgba(255,255,255,0.05)" },
+  newBtn:          { width: "100%", padding: "10px 14px", background: `linear-gradient(135deg,${C.blue800},${C.blue600})`, color: "#fff", border: "none", borderRadius: 8, fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, cursor: "pointer", letterSpacing: ".02em", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 },
+  main:            { flex: 1, display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" },
+  topbar:          { background: "#fff", borderBottom: `1px solid ${C.border}`, padding: "0 28px", height: 58, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 },
+  topbarLeft:      { display: "flex", alignItems: "center", gap: 14 },
+  topbarDot:       { width: 8, height: 8, borderRadius: "50%", background: "#22c55e", flexShrink: 0 },
+  topbarTitle:     { fontSize: 14, fontWeight: 600, color: C.text },
+  topbarSub:       { fontSize: 12, color: C.muted },
+  topbarActions:   { display: "flex", gap: 8, alignItems: "center" },
+  tbBtn:           { padding: "7px 16px", borderRadius: 8, fontSize: 12.5, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", transition: "all .18s", letterSpacing: ".02em" },
+  tbSolid:         { background: C.blue600, border: "none", color: "#fff" },
+  content:         { flex: 1, overflowY: "auto", padding: "32px 36px 0" },
+  sectionLabel:    { fontSize: 11, fontWeight: 600, letterSpacing: ".14em", textTransform: "uppercase", color: C.blue400, marginBottom: 14 },
+  pageTitle:       { fontFamily: "'Rajdhani', sans-serif", fontSize: 34, fontWeight: 700, color: C.blue900, letterSpacing: ".02em", marginBottom: 6 },
+  pageSub:         { fontSize: 14, color: C.muted, marginBottom: 28, fontWeight: 400 },
+  convoWrap:       { marginBottom: 20 },
+  welcome:         { textAlign: "center", padding: "40px 20px", opacity: 0.55 },
+  welcomeIcon:     { margin: "0 auto 16px", width: 56, height: 56, borderRadius: "50%", background: C.blue50, border: `2px solid ${C.blue100}`, display: "flex", alignItems: "center", justifyContent: "center" },
+  msgUser:         { display: "flex", justifyContent: "flex-end", marginBottom: 16 },
+  bubbleUser:      { background: C.blue600, color: "#fff", padding: "12px 16px", borderRadius: "14px 14px 4px 14px", maxWidth: "72%", fontSize: 14, lineHeight: 1.55 },
+  msgAi:           { display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 16 },
+  aiAvatar:        { width: 32, height: 32, borderRadius: "4px", background: C.blue50, border: `2px solid ${C.blue200}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  bubbleAi:        { background: "#fff", border: `1px solid ${C.border}`, color: C.text, padding: "12px 16px", borderRadius: "4px 14px 14px 14px", maxWidth: "78%", fontSize: 14, lineHeight: 1.6 },
+  bubbleLabel:     { fontSize: 10.5, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", color: C.blue400, marginBottom: 6 },
+  inputZone:       { background: "#fff", borderTop: `1px solid ${C.border}`, padding: "14px 24px 16px", flexShrink: 0 },
+  fileChipsRow:    { display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 },
+  fileChip:        { padding: "4px 10px 4px 8px", background: C.blue50, border: `1px solid ${C.blue100}`, borderRadius: 6, fontSize: 11.5, color: C.blue800, display: "flex", alignItems: "center", gap: 5 },
+  fileChipX:       { cursor: "pointer", color: C.muted, fontSize: 13, lineHeight: 1, marginLeft: 2 },
+  inputRow:        { display: "flex", alignItems: "flex-end", gap: 10, background: "#f8fbff", border: `1.5px solid ${C.blue100}`, borderRadius: 12, padding: "10px 12px" },
+  uploadBtn:       { width: 32, height: 32, borderRadius: 8, border: `1px solid ${C.blue200}`, background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: C.blue600 },
+  textarea:        { flex: 1, border: "none", background: "transparent", fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: C.text, resize: "none", outline: "none", minHeight: 24, maxHeight: 100, lineHeight: 1.5, padding: "4px 0" },
+  sendBtn:         { width: 36, height: 36, borderRadius: 9, border: "none", background: C.blue600, color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all .18s" },
   sendBtnDisabled: { opacity: 0.45, cursor: "not-allowed" },
-  renameInput:   { width: "100%", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(55,138,221,0.5)", borderRadius: 5, color: "#e0eaf5", fontSize: 12, fontFamily: "'DM Sans', sans-serif", padding: "3px 7px", outline: "none", boxSizing: "border-box", marginBottom: 2 },
-  sessionActions:{ display: "flex", gap: 3, flexShrink: 0 },
-  iconBtn:       { width: 22, height: 22, borderRadius: 5, border: "none", background: "rgba(55,138,221,0.18)", color: "#7ab8e8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, transition: "background .15s, color .15s" },
-  iconBtnDelete: { background: "rgba(220,60,60,0.18)", color: "#e87a7a" },
-  inputHint:     { fontSize: 11, color: "#a0b8cc", padding: "6px 4px 0", display: "flex", alignItems: "center", gap: 5 },
+  renameInput:     { width: "100%", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(55,138,221,0.5)", borderRadius: 5, color: "#e0eaf5", fontSize: 12, fontFamily: "'DM Sans', sans-serif", padding: "3px 7px", outline: "none", boxSizing: "border-box", marginBottom: 2 },
+  sessionActions:  { display: "flex", gap: 3, flexShrink: 0 },
+  iconBtn:         { width: 22, height: 22, borderRadius: 5, border: "none", background: "rgba(55,138,221,0.18)", color: "#7ab8e8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, transition: "background .15s, color .15s" },
+  iconBtnDelete:   { background: "rgba(220,60,60,0.18)", color: "#e87a7a" },
+  inputHint:       { fontSize: 11, color: "#a0b8cc", padding: "6px 4px 0", display: "flex", alignItems: "center", gap: 5 },
 };
