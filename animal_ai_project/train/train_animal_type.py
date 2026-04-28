@@ -6,10 +6,14 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.applications import EfficientNetB0
 
+from pathlib import Path
 
-BASE_DIR = Path(r"D:\animal_ai_project")
-DATASETS_DIR = BASE_DIR / "datasets"
-MODELS_DIR = BASE_DIR / "models"
+# Get project root automatically
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+DATASET_DIR = BASE_DIR / "datasets" / "animal" / "type"
+MODEL_PATH = BASE_DIR / "models" / "animal_type_model.keras"
+CLASS_PATH = BASE_DIR / "models" / "animal_type_classes.json"
 
 MODEL_PATH = MODELS_DIR / "animal_type_model.keras"
 CLASS_PATH = MODELS_DIR / "animal_type_classes.json"

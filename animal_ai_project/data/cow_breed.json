@@ -2,23 +2,23 @@
   "alambadi": {
     "animal": "Cow",
     "breed": "Alambadi",
-    "origin": "India",
-    "life_span": "15-20 years",
-    "temperament": "Active, hardy, aggressive",
-    "food": "Grass, hay, and agricultural by-products",
-    "care": "Needs open grazing space and regular health monitoring",
-    "description": "Alambadi cattle are a native Indian breed known for their strength, endurance, and suitability for draught work."
+    "origin": "Tamil Nadu, India",
+    "life_span": "15-18 years",
+    "temperament": "Active, hardy, aggressive in nature",
+    "food": "Grass, dry fodder, crop residues",
+    "care": "Requires open grazing, regular vaccination, parasite control",
+    "description": "Alambadi is a draught breed used mainly for ploughing and transport. It is strong and well adapted to forest and hilly regions."
   },
 
   "amritmahal": {
     "animal": "Cow",
     "breed": "Amritmahal",
-    "origin": "India",
+    "origin": "Karnataka, India",
     "life_span": "12-15 years",
-    "temperament": "Active, alert, energetic",
-    "food": "Green fodder, dry fodder, and grains",
-    "care": "Requires proper nutrition and space for movement",
-    "description": "Amritmahal cattle are known for their speed and strength, mainly used for draught purposes in India."
+    "temperament": "Energetic, fast, strong",
+    "food": "Green fodder, dry grass, grains",
+    "care": "Needs regular exercise and proper shelter",
+    "description": "Amritmahal is a famous draught breed known for its speed and endurance. Mainly used for agricultural work."
   },
 
   "ayrshire": {
@@ -26,9 +26,42 @@
     "breed": "Ayrshire",
     "origin": "Scotland",
     "life_span": "15-20 years",
-    "temperament": "Hardy, adaptable, calm",
-    "food": "Grass, silage, and dairy feed",
-    "care": "Regular milking and proper dairy management",
-    "description": "Ayrshire cattle are a dairy breed known for their high milk production and adaptability to different climates."
+    "temperament": "Docile, active, adaptable",
+    "food": "High-quality grass, silage, concentrate feed",
+    "care": "Requires good dairy management and hygiene",
+    "description": "Ayrshire is a high milk-producing dairy breed known for good quality milk with moderate fat content."
+  },
+
+  "gir": {
+    "animal": "Cow",
+    "breed": "Gir",
+    "origin": "Gujarat, India",
+    "life_span": "12-15 years",
+    "temperament": "Gentle, calm, friendly",
+    "food": "Green fodder, dry fodder, mineral mixture",
+    "care": "Regular health checkups, proper feeding",
+    "description": "Gir is one of the best dairy breeds in India with high milk production and disease resistance."
+  },
+
+  "hariana": {
+    "animal": "Cow",
+    "breed": "Hariana",
+    "origin": "Haryana, India",
+    "life_span": "12-18 years",
+    "temperament": "Docile, strong, hardworking",
+    "food": "Grass, crop residues, concentrates",
+    "care": "Regular feeding and clean shelter",
+    "description": "Hariana is a dual-purpose breed used for both milk production and agricultural work."
+  },
+
+  "kankrej": {
+    "animal": "Cow",
+    "breed": "Kankrej",
+    "origin": "Gujarat & Rajasthan, India",
+    "life_span": "12-15 years",
+    "temperament": "Calm, strong, adaptable",
+    "food": "Green fodder, dry fodder, grains",
+    "care": "Proper nutrition and regular veterinary care",
+    "description": "Kankrej is a dual-purpose breed known for both milk production and draught work."
   }
 }

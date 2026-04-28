@@ -128,5 +128,16 @@
     "food": "Balanced diet",
     "care": "Low exercise, regular cleaning",
     "description": "Pugs are small companion dogs known for wrinkled faces and affectionate nature."
-  }
+  },
+  
+  "german_shepherd": {
+  "animal": "Dog",
+  "breed": "German Shepherd",
+  "origin": "Germany",
+  "life_span": "9-13 years",
+  "temperament": "Loyal, intelligent, protective",
+  "food": "High-protein balanced diet",
+  "care": "Daily exercise, regular grooming, training required",
+  "description": "German Shepherds are highly intelligent and versatile working dogs, commonly used in police, military, and service roles. They are known for loyalty, strength, and obedience."
+}
 }

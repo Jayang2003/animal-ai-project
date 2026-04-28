@@ -15,13 +15,13 @@ def load_services():
     kb = AnimalKnowledgeBase()
 
     model_status = {
-        "animal_type": predictor.load_model("animal", "type"),
-        "dog_breed": predictor.load_model("dog", "breed"),
-        "cat_breed": predictor.load_model("cat", "breed"),
-        "cow_breed": predictor.load_model("cow", "breed"),
-        "horse_breed": predictor.load_model("horse", "breed"),
-        "buffalo_breed": predictor.load_model("buffalo", "breed"),
-        "dog_age": predictor.load_model("dog", "age"),
+        "animal_type":    predictor.load_model("animal",   "type"),
+        "dog_breed":      predictor.load_model("dog",      "breed"),
+        "cat_breed":      predictor.load_model("cat",      "breed"),
+        "cow_breed":      predictor.load_model("cow",      "breed"),
+        "horse_breed":    predictor.load_model("horse",    "breed"),
+        "buffalo_breed":  predictor.load_model("buffalo",  "breed"),
+        "dog_age":        predictor.load_model("dog",      "age"),
     }
 
     return predictor, kb, model_status
@@ -48,7 +48,29 @@ def format_age_label(label: str) -> str:
     return label.replace("_", " to ").replace("plus", "+").title() + " Years"
 
 
+# ── Unknown detection (same logic as api.py) ───────────────────────────────
+def is_unknown_animal(result: dict) -> bool:
+    confidence = float(result.get("confidence", 0) or 0)
+    margin     = float(result.get("margin",     0) or 0)
+    return confidence < 0.55 or margin < 0.10
+
+
+def is_unknown_breed(result: dict) -> bool:
+    confidence = float(result.get("confidence", 0) or 0)
+    margin     = float(result.get("margin",     0) or 0)
+    entropy    = float(result.get("entropy",    0) or 0)
+    top2_ratio = float(result.get("top2_ratio", 0) or 0)
+
+    if confidence < 0.75 or margin < 0.15:
+        return True
+    if entropy > 0.65 or top2_ratio > 0.65:
+        return True
+    return False
+
+
+# ── detect ─────────────────────────────────────────────────────────────────
 def detect(image, predictor, kb, model_status):
+    # ── Step 1: Predict animal type ────────────────────────────────────────
     animal_result = predictor.predict(image, "animal", "type", return_uncertainty=True)
 
     if "error" in animal_result:
@@ -58,18 +80,48 @@ def detect(image, predictor, kb, model_status):
         animal_result.get("predicted_class") or animal_result.get("raw_class")
     )
 
+    # ── Step 2: Unknown animal check ───────────────────────────────────────
+    if is_unknown_animal(animal_result):
+        return {
+            "image":         image,
+            "animal":        "unknown",
+            "breed":         None,
+            "breed_info":    {},
+            "age_result":    None,
+            "age_info":      None,
+            "animal_result": animal_result,
+            "breed_result":  None,
+            "unknown_reason": "not_animal",   # image is not a supported animal
+        }
+
+    # ── Step 3: Predict breed ──────────────────────────────────────────────
     predictor.set_thresholds(animal, "breed", 0.75, 0.15)
     breed_result = predictor.predict(image, animal, "breed", return_uncertainty=True)
 
     if "error" in breed_result:
         return {"error": breed_result["error"]}
 
+    # ── Step 4: Unknown breed check ────────────────────────────────────────
+    if is_unknown_breed(breed_result):
+        return {
+            "image":         image,
+            "animal":        animal,           # we know the animal type
+            "breed":         "unknown",
+            "breed_info":    {},
+            "age_result":    None,
+            "age_info":      None,
+            "animal_result": animal_result,
+            "breed_result":  breed_result,
+            "unknown_reason": "not_in_dataset", # animal found but breed not in dataset
+        }
+
     breed = normalize_label(
         breed_result.get("predicted_class") or breed_result.get("raw_class")
     )
 
+    # ── Step 5: Age prediction (dogs only) ────────────────────────────────
     age_result = None
-    age_info = None
+    age_info   = None
 
     if animal == "dog":
         predictor.set_thresholds("dog", "age", 0.60, 0.10)
@@ -85,17 +137,19 @@ def detect(image, predictor, kb, model_status):
     breed_info = kb.get_info(animal, "breed", breed)
 
     return {
-        "image": image,
-        "animal": animal,
-        "breed": breed,
-        "breed_info": breed_info,
-        "age_result": age_result,
-        "age_info": age_info,
+        "image":         image,
+        "animal":        animal,
+        "breed":         breed,
+        "breed_info":    breed_info,
+        "age_result":    age_result,
+        "age_info":      age_info,
         "animal_result": animal_result,
-        "breed_result": breed_result,
+        "breed_result":  breed_result,
+        "unknown_reason": None,
     }
 
 
+# ── chat ───────────────────────────────────────────────────────────────────
 def render_chat(predictor, kb, model_status):
     st.markdown("## 🤖 Ask the Assistant")
 
@@ -116,7 +170,7 @@ def render_chat(predictor, kb, model_status):
     if not prompt:
         return
 
-    text = prompt.text if hasattr(prompt, "text") else ""
+    text  = prompt.text  if hasattr(prompt, "text")  else ""
     files = prompt.files if hasattr(prompt, "files") else []
 
     if files:
@@ -127,41 +181,61 @@ def render_chat(predictor, kb, model_status):
 
         if "error" in result:
             st.session_state.chat_history.append({
-                "role": "assistant",
-                "content": result["error"]
+                "role":    "assistant",
+                "content": f"❌ Error: {result['error']}"
             })
             st.rerun()
 
         st.session_state.analysis = result
         st.session_state.chat_context = {
             "animal": result["animal"],
-            "breed": result["breed"]
+            "breed":  result.get("breed"),
         }
 
+        # ── Reset history on new image ─────────────────────────────────────
         st.session_state.chat_history = []
 
-        msg = f"""
-Image analyzed ✅  
-Animal: {result['animal']}  
-Breed: {result['breed']}  
+        # ── Build message based on result ─────────────────────────────────
+        animal = result["animal"]
+        breed  = result.get("breed")
+        reason = result.get("unknown_reason")
 
-Now ask anything about this animal.
-"""
+        if animal == "unknown":
+            msg = (
+                "❌ **Unknown Image Detected**\n\n"
+                "This image does not appear to be a supported animal.\n\n"
+                "**Supported animals:** Dog, Cat, Cow, Horse, Buffalo\n\n"
+                "Please upload a clear image of one of these animals."
+            )
 
-        st.session_state.chat_history.append({
-            "role": "assistant",
-            "content": msg
-        })
+        elif breed == "unknown":
+            msg = (
+                f"⚠️ **{animal.title()} Detected — Breed Unknown**\n\n"
+                f"I can see this is a **{animal}**, but the breed is not in my dataset.\n\n"
+                f"I only recognise specific trained breeds. Try a clearer image or a different breed."
+            )
 
-        if text:
+        else:
+            animal_conf = float(result["animal_result"].get("confidence", 0) or 0)
+            breed_conf  = float(result["breed_result"].get("confidence",  0) or 0)
+            msg = (
+                f"✅ **Image Analyzed Successfully**\n\n"
+                f"🐾 **Animal:** {animal.title()} ({animal_conf*100:.1f}%)\n"
+                f"🔍 **Breed:** {breed.replace('_', ' ').title()} ({breed_conf*100:.1f}%)\n\n"
+                f"Ask me anything about food, care, temperament, origin, or life span!"
+            )
+
+        st.session_state.chat_history.append({"role": "assistant", "content": msg})
+
+        # ── If user also typed a message with the image ────────────────────
+        if text and animal != "unknown" and breed != "unknown":
             st.session_state.chat_history.append({"role": "user", "content": text})
 
             reply = chat(
                 message=text,
                 history=st.session_state.chat_history[:-1],
-                context=st.session_state.chat_context
+                context=st.session_state.chat_context,
             )
-
             st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
         st.rerun()
@@ -172,13 +246,13 @@ Now ask anything about this animal.
         reply = chat(
             message=text,
             history=st.session_state.chat_history[:-1],
-            context=st.session_state.chat_context
+            context=st.session_state.chat_context,
         )
-
         st.session_state.chat_history.append({"role": "assistant", "content": reply})
         st.rerun()
 
 
+# ── age result ─────────────────────────────────────────────────────────────
 def render_age_result(age_result, age_info=None):
     st.markdown("### Age Prediction")
 
@@ -193,9 +267,7 @@ def render_age_result(age_result, age_info=None):
     if age_result.get("is_uncertain", False):
         label = age_result.get("raw_class", "Unknown")
         st.warning("Age prediction is uncertain")
-        st.markdown(
-            f"**Reason:** {age_result.get('reason', 'Confidence is below threshold')}"
-        )
+        st.markdown(f"**Reason:** {age_result.get('reason', 'Confidence is below threshold')}")
         st.markdown(f"**Best Guess:** {format_age_label(label)}")
     else:
         label = age_result.get("predicted_class", "Unknown")
@@ -213,43 +285,80 @@ def render_age_result(age_result, age_info=None):
             st.markdown(f"**Note:** {age_info['note']}")
 
 
+# ── result panel ───────────────────────────────────────────────────────────
 def render_result():
     data = st.session_state.analysis
     if not data:
-        st.info("Upload image in chat above")
+        st.info("Upload an image in the chat above to get started.")
         return
 
     st.image(data["image"], width=300)
-    st.markdown(f"## {data['animal'].title()} - {data['breed'].title()}")
+
+    animal = data.get("animal", "unknown")
+    breed  = data.get("breed")
+    reason = data.get("unknown_reason")
+
+    # ── Case 1: Not a supported animal at all ──────────────────────────────
+    if animal == "unknown":
+        st.error("🚫 Unknown — Image Not Recognized")
+        st.markdown(
+            "This image does not match any animal in the supported dataset.\n\n"
+            "**Supported animals:** Dog · Cat · Cow · Horse · Buffalo"
+        )
+        if data.get("animal_result"):
+            conf = float(data["animal_result"].get("confidence", 0) or 0)
+            st.caption(f"Model confidence was too low: {conf*100:.1f}%")
+        return
+
+    # ── Case 2: Animal found but breed not in dataset ──────────────────────
+    if breed == "unknown":
+        st.warning(f"⚠️ {animal.title()} Detected — Breed Unknown")
+        st.markdown(
+            f"The animal type **{animal.title()}** was identified, "
+            f"but the specific breed is not in the training dataset.\n\n"
+            f"Try uploading a clearer image or a different breed."
+        )
+        if data.get("breed_result"):
+            conf = float(data["breed_result"].get("confidence", 0) or 0)
+            st.caption(f"Breed confidence was too low: {conf*100:.1f}%")
+        return
+
+    # ── Case 3: Full successful prediction ────────────────────────────────
+    animal_conf = float(data["animal_result"].get("confidence", 0) or 0)
+    breed_conf  = float(data["breed_result"].get("confidence",  0) or 0) if data.get("breed_result") else 0
+
+    st.markdown(f"## 🐾 {animal.title()} — {breed.replace('_', ' ').title()}")
+
+    col1, col2 = st.columns(2)
+    col1.metric("Animal Confidence", f"{animal_conf*100:.1f}%")
+    col2.metric("Breed Confidence",  f"{breed_conf*100:.1f}%")
 
     if data["breed_info"]:
         st.markdown("### Breed Details")
-
         labels = {
-            "animal": "Animal",
-            "breed": "Breed",
-            "origin": "Origin",
-            "life_span": "Life Span",
+            "animal":      "Animal",
+            "breed":       "Breed",
+            "origin":      "Origin",
+            "life_span":   "Life Span",
             "temperament": "Temperament",
-            "food": "Food",
-            "care": "Care",
+            "food":        "Food",
+            "care":        "Care",
             "description": "Description",
         }
-
         for key, label in labels.items():
             if key in data["breed_info"]:
                 st.markdown(f"**{label}:** {data['breed_info'][key]}")
     else:
         st.warning("Breed details not found in knowledge base.")
         with st.expander("Debug info"):
-            st.write("Animal:", data["animal"])
-            st.write("Breed:", data["breed"])
-            st.write("Breed info:", data["breed_info"])
+            st.write("Animal:", animal)
+            st.write("Breed:",  breed)
 
-    if data["animal"] == "dog":
+    if animal == "dog":
         render_age_result(data["age_result"], data["age_info"])
 
 
+# ── main ───────────────────────────────────────────────────────────────────
 def main():
     init_state()
     st.title("🐾 Animal Classification Pro")

@@ -8,11 +8,15 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 # =========================
 # CONFIG
 # =========================
-DATASET_DIR = r"D:\animal_ai_project\datasets\dog\age\labrador"
-MODEL_DIR = r"D:\animal_ai_project\models"
+from pathlib import Path
 
-MODEL_PATH = os.path.join(MODEL_DIR, "dog_age_model.keras")
-CLASS_NAMES_PATH = os.path.join(MODEL_DIR, "dog_age_classes.json")
+# Get project root automatically
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATASET_DIR = BASE_DIR / "datasets" / "dog" / "age"
+MODEL_PATH = BASE_DIR / "models" / "dog_age_model.keras"
+CLASS_PATH = BASE_DIR / "models" / "dog_age_classes.json"
+
+
 
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 16

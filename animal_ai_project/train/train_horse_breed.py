@@ -4,9 +4,13 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.applications import EfficientNetB0
 
-DATASET_DIR = r"D:\animal_ai_project\datasets\horse\breed"
-MODEL_PATH = r"D:\animal_ai_project\models\horse_breed_model.keras"
-CLASS_PATH = r"D:\animal_ai_project\models\horse_breed_classes.json"
+from pathlib import Path
+
+# Get project root automatically
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATASET_DIR = BASE_DIR / "datasets" / "horse" / "breed"
+MODEL_PATH = BASE_DIR / "models" / "horse_breed_model.keras"
+CLASS_PATH = BASE_DIR / "models" / "horse_breed_classes.json"
 
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 16

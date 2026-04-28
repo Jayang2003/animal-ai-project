@@ -4,9 +4,17 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.applications import EfficientNetB0
 
-DATASET_DIR = r"D:\animal_ai_project\datasets\dog\breed"
-MODEL_PATH = r"D:\animal_ai_project\models\dog_breed_model.keras"
-CLASS_PATH = r"D:\animal_ai_project\models\dog_breed_classes.json"
+from pathlib import Path
+
+# Get project root automatically
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Dynamic dataset + model paths
+DATASET_DIR = BASE_DIR / "datasets" / "dog" / "breed"
+MODEL_PATH = BASE_DIR / "models" / "dog_breed_model.keras"
+CLASS_PATH = BASE_DIR / "models" / "dog_breed_classes.json"
+
+print("Dataset path:", DATASET_DIR)
 
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 16
